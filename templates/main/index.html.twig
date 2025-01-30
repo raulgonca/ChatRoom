@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ChatRoom{% endblock %}
+
+{% block body %}
+
+    <h1>ChatRoom</h1>
+    <p>Welcome to ChatRoom</p>
+
+
+    {%if is_granted('ROLE_USER') %}
+        {{ form_start(form) }}
+            {{ form_widget(form.content) }}
+            <button type="submit">Enviar</button>
+        {{ form_end(form) }}
+    {% endif %}
+
+    <h2>Chat</h2>
+
+    {% for message in messages %}
+        <div class="message">
+            <p>{{ message.content }}</p>
+            <p>Posted by {{message.username.username }} on {{ message.date|date }}</p>
+        </div>
+    {% endfor %}
+
+{% endblock %}
