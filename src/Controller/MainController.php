@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Message;
-use App\Form\MessageType;
+use App\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,32 +15,39 @@ final class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(EntityManagerInterface $em, Request $request): Response
     {
-        $message = new Message();
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
+        $rooms = $em->getRepository(Room::class)->findAll();
 
-        // Obtener mensajes ordenados por fecha
-        $messages = $em->getRepository(Message::class)
-            ->findBy([], ['date' => 'DESC'], 50);
-        
+        return $this->render('main/index.html.twig', [
+            'rooms' => $rooms,
+        ]);
+    }
+
+    #[Route('/room/{id}', name: 'app_room', methods: ['GET', 'POST'])]
+    public function room(Room $room, EntityManagerInterface $em, Request $request): Response
+    {
+        $message = new Message();
+      
         $user = $this->getUser();
 
-        // Procesar el formulario
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Asignar fecha y usuario automáticamente
+        $contenido = $request->get('mensaje');
+        
+        if (empty(trim($contenido))) {
+            $this->addFlash('error', 'El mensaje no puede estar vacío');
+            // return $this->redirectToRoute('app_main');
+
+        }else {
             $message->setDate(new \DateTime());
             $message->setUser($user); // Usa el objeto User completo
+            $message->setContent($contenido);
+            $message->setRoom($room);
 
             $em->persist($message);
             $em->flush();
 
-            // Redirigir para evitar reenvíos del formulario
-            return $this->redirectToRoute('app_main');
         }
 
-        return $this->render('main/index.html.twig', [
-            'form' => $form->createView(),
-            'messages' => $messages,
+        return $this->render('main/room.html.twig', [
+            'room' => $room,
         ]);
     }
 }

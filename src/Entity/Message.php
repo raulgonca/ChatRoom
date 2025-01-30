@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,10 +21,18 @@ class Message
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    // Relación ManyToOne corregida: ahora usa $user en lugar de $username
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'room_id')]
+    private ?Room $room = null;
+
+
+    public function __construct()
+    {
+        $this->room_id = new ArrayCollection();
+    }
 
     // Getters y Setters
 
@@ -68,4 +77,18 @@ class Message
 
         return $this;
     }
+
+    public function getRoom(): ?Room
+    {
+        return $this->room;
+    }
+
+    public function setRoom(?Room $room): static
+    {
+        $this->room = $room;
+
+        return $this;
+    }
+
+
 }

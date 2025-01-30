@@ -3,25 +3,36 @@
 {% block title %}ChatRoom{% endblock %}
 
 {% block body %}
+<style>
+ .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 5px;
+        font-family: Arial, sans-serif;
+    }
 
-    <h1>ChatRoom</h1>
-    <p>Welcome to ChatRoom</p>
+    h1 {
+        color: #2c3e50;
+        text-align: center;
+    }
+
+    h2 {
+        color: #34495e;
+        margin-bottom: 5px;
+    }
+
+</style>
 
 
-    {% if is_granted('ROLE_USER') %}
-        {{ form_start(form) }}
-            {{ form_widget(form.content) }}
-            <button type="submit">Enviar</button>
-        {{ form_end(form) }}
-    {% endif %}
+<div class="container">
+    <h1>Welcome to ChatRoom</h1>
 
     <h2>Chat</h2>
 
-    {% for message in messages %}
-        <div class="message">
-            <p>{{ message.content }}</p>
-            <p>Posted by {{message.user.username }} on {{ message.date|date }}</p>
-        </div>
+    {% for room in rooms %}
+        <ul>
+            <li><a href="/room/{{ room.id }}">{{ room.name }}</a></li>
+        </ul>
     {% endfor %}
-
+</div>
 {% endblock %}

@@ -130,25 +130,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->messages;
     }
 
-    public function addMessage(Message $message): static
-    {
-        if (!$this->messages->contains($message)) {
-            $this->messages->add($message);
-            $message->setUsername($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMessage(Message $message): static
-    {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getUsername() === $this) {
-                $message->setUsername(null);
-            }
-        }
-
-        return $this;
-    }
+   
 }
