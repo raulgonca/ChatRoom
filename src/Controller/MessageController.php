@@ -24,27 +24,27 @@ final class MessageController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_message_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $message = new Message();
-        $form = $this->createForm(MessageType::class, $message);
-        $form->handleRequest($request);
+    // #[Route('/new', name: 'app_message_new', methods: ['GET', 'POST'])]
+    // public function new(Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     $message = new Message();
+    //     $form = $this->createForm(MessageType::class, $message);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $message->setDate(new \DateTime());
-            $message ->setUsername( $this->getUser()->getId());
-            $entityManager->persist($message);
-            $entityManager->flush();
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $message->setDate(new \DateTime());
+    //         $message ->setUsername( $this->getUser()->getId());
+    //         $entityManager->persist($message);
+    //         $entityManager->flush();
 
-            // return $this->redirectToRoute('app_message_index', [], Response::HTTP_SEE_OTHER);
-        }
+    //         // return $this->redirectToRoute('app_message_index', [], Response::HTTP_SEE_OTHER);
+    //     }
 
-        return $this->render('message/new.html.twig', [
-            'message' => $message,
-            'form' => $form->createView(),
-        ]);
-    }
+    //     return $this->render('message/new.html.twig', [
+    //         'message' => $message,
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
 
     #[Route('/{id}', name: 'app_message_show', methods: ['GET'])]
     public function show(Message $message): Response

@@ -20,8 +20,12 @@ class Message
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    private ?User $username = null;
+    // Relación ManyToOne corregida: ahora usa $user en lugar de $username
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'messages')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private ?User $user = null;
+
+    // Getters y Setters
 
     public function getId(): ?int
     {
@@ -52,14 +56,15 @@ class Message
         return $this;
     }
 
-    public function getUsername(): ?User
+    // Getter y Setter para User (antes llamado username)
+    public function getUser(): ?User
     {
-        return $this->username;
+        return $this->user;
     }
 
-    public function setUsername(?User $username): static
+    public function setUser(?User $user): static
     {
-        $this->username = $username;
+        $this->user = $user;
 
         return $this;
     }
